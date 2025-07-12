@@ -23,11 +23,14 @@ transaltion_template = ChatPromptTemplate.from_messages(
 )
 
 prepare_translation = RunnableLambda(
-    lambda output: {'text': output, 'language': 'Spanish'}
+    lambda output: {'text': output, 'language': 'Hindi'}
 )
 
-chain = prompt_template | model | StrOutputParser() | prepare_translation | transaltion_template | model | StrOutputParser()
+# chain = prompt_template | model | StrOutputParser() | prepare_translation | transaltion_template | model | StrOutputParser()
 
+chain = RunnableSequence(first=prompt_template, middle=[model, StrOutputParser() , prepare_translation, transaltion_template, model], last=StrOutputParser())
+
+# Here we can see how RunnableSequence can be used to chain multiple steps together.
 result = chain.invoke({'animal': "elephant", 'fact_number': 3})
 
 print(result)
